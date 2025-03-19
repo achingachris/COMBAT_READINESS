@@ -1,4 +1,6 @@
+import uuid
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 class Soldier(models.Model):
     RANK_CHOICES = [
@@ -12,13 +14,17 @@ class Soldier(models.Model):
         ('General', 'General'),
     ]
 
-    name = models.CharField(max_length=100)
-    rank = models.CharField(max_length=20, choices=RANK_CHOICES)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    name = models.CharField(max_length=100, help_text="name of the soldier")
+    rank = models.CharField(_("soldier rank"), max_length=20, choices=RANK_CHOICES)
     unit = models.CharField(max_length=50)
     status = models.CharField(max_length=20, choices=[('Active', 'Active'), ('Inactive', 'Inactive')])
 
     def __str__(self):
         return f"{self.rank} {self.name}"
+    
+    class Meta:
+        verbose_name_plural = "`Soldiers"
 
 
 class Equipment(models.Model):
@@ -37,6 +43,7 @@ class Equipment(models.Model):
         ('Damaged', 'Damaged'),
     ]
 
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=100)
     type = models.CharField(max_length=20, choices=EQUIPMENT_TYPES)
     condition = models.CharField(max_length=20, choices=CONDITION_CHOICES)
@@ -44,3 +51,6 @@ class Equipment(models.Model):
 
     def __str__(self):
         return f"{self.name} ({self.type})"
+
+    class Meta:
+        verbose_name_plural = "`Equipments"
